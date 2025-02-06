@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Ofertas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 20px;
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #222;
+        }
+
+        .lista-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .produto {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .produto:hover {
+            transform: translateY(-5px);
+        }
+
+        .produto img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .produto h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .produto p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .produto a {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .produto a:hover {
+            background: #0056b3;
+        }
+
+        /* Estilização das Melhores Ofertas */
+        .melhores-ofertas {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .melhores-ofertas p a {
+            font-weight: bold;
+            color: #d9534f;
+            text-decoration: none;
+        }
+
+        .melhores-ofertas p a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilização do Formulário */
+        .filtros {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .filtros button {
+            background:rgb(167, 40, 40);
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .filtros button:hover {
+            background:rgb(65, 17, 17);
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Catálogo de Ofertas</h1>
+
+    <!-- Filtros -->
+    <div class="filtros">
+        <h2>Filtros</h2>
+        <form method="get">
+            <label>
+                <input type="checkbox" name="frete_gratis" {% if request.GET.frete_gratis %}checked{% endif %}> Frete Grátis
+            </label>
+            <label>
+                <input type="checkbox" name="full" {% if request.GET.full %}checked{% endif %}> Entrega Full
+            </label>
+            <button type="submit">Filtrar</button>
+        </form>
+    </div>
+
+    <!-- Melhores Ofertas -->
+    <div class="melhores-ofertas">
+        <h2>Melhores Ofertas</h2>
+            <p>
+                <strong>Maior Preço:</strong> 
+                <a href="{{ maior_preco.link }}" target="_blank">{{ maior_preco.nome }}</a> - R$ {{ maior_preco.preco }}
+            </p>
+            <p>
+                <strong>Menor Preço:</strong> 
+                <a href="{{ menor_preco.link }}" target="_blank">{{ menor_preco.nome }}</a> - R$ {{ menor_preco.preco }}
+            </p>
+            <p>
+                <strong>Maior Desconto:</strong> 
+                <a href="{{ maior_desconto.link }}" target="_blank">{{ maior_desconto.nome }}</a> - {{ maior_desconto.percentual_desconto }}%
+            </p>
+    </div>
+
+    <!-- Lista de Produtos -->
+    <h2>Produtos</h2>
+    <div class="lista-produtos">
+        {% for produto in produtos %}
+        <div class="produto">
+            <img src="{{ produto.imagem }}" alt="{{ produto.nome }}">
+            <h3>{{ produto.nome }}</h3>
+            <p><strong>Preço:</strong> R$ {{ produto.preco }}</p>
+            <p><strong>Parcelamento:</strong> {{ produto.parcelamento }}</p>
+            <p><a href="{{ produto.link }}" target="_blank">Ver Produto</a></p>
+            {% if produto.preco_sem_desconto %}
+            <p><strong>Preço sem Desconto:</strong> R$ {{ produto.preco_sem_desconto }}</p>
+            {% endif %}
+            {% if produto.percentual_desconto %}
+            <p><strong>Desconto:</strong> {{ produto.percentual_desconto }}%</p>
+            {% endif %}
+            <p><strong>Tipo de Entrega:</strong> {{ produto.tipo_entrega }}</p>
+            {% if produto.frete_gratis %}
+            <p><strong>Frete Grátis</strong></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
