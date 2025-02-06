@@ -1,4 +1,3 @@
-from django.core.paginator import Paginator
 from django.shortcuts import render
 from ofertas.models import Produto
 from ofertas.scrapy import scrape_mercado_livre
@@ -18,9 +17,6 @@ def lista_produtos(request):
     if filtro_full:
         produtos = produtos.filter(tipo_entrega='Full')
         
-    paginator = Paginator(produtos, 12)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     
     # Cálculos extras
     maior_preco = produtos.order_by('-preco').first()
